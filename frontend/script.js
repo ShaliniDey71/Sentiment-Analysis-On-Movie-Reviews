@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (review !== "") {
             try {
-                const response = await fetch('https://sentiment-analysis-on-movie-reviews-izn3.onrender.com/predict', {
+                const response = await fetch('https://sentiment-analysis-on-movie-reviews-ca2n.onrender.com/predict', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

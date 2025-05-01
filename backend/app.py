@@ -1,3 +1,4 @@
+import nltk
 from flask import Flask, request, jsonify, send_from_directory
 import joblib
 import os
@@ -5,16 +6,18 @@ import string
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
-from flask_cors import CORS
+
+# Check and download NLTK punkt data if not already available
+try:
+    nltk.data.find('tokenizers/punkt')
+except LookupError:
+    nltk.download('punkt')
 
 app = Flask(
     __name__,
-    static_folder='../frontend',  # Path to your frontend build folder
+    static_folder='../frontend',
     static_url_path=''
 )
-
-# Enable CORS for all routes
-CORS(app)
 
 try:
     model = joblib.load(os.path.join(os.path.dirname(__file__), 'model.pkl'))
@@ -62,6 +65,4 @@ def predict():
         return jsonify({'error': 'Error predicting sentiment.'}), 500
 
 if __name__ == '__main__':
-    # Use environment port for production
-    port = int(os.environ.get('PORT', 5500))
-    app.run(debug=True, host='0.0.0.0', port=port)
+    app.run(debug=True, port=5500)
