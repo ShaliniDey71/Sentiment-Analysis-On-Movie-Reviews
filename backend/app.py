@@ -15,10 +15,11 @@ except LookupError:
 
 app = Flask(
     __name__,
-    static_folder='../frontend',
-    static_url_path=''
+    static_folder='frontend',  # Ensure the 'frontend' folder contains your static files (like index.html)
+    static_url_path='/static'   # This means static files are accessed via /static/
 )
 
+# Load model and vectorizer
 try:
     model = joblib.load(os.path.join(os.path.dirname(__file__), 'model.pkl'))
     vectorizer = joblib.load(os.path.join(os.path.dirname(__file__), 'tfidf_vectorizer.pkl'))
@@ -38,10 +39,12 @@ def preprocessed_text(text):
 
 @app.route('/')
 def index():
+    # Serve 'index.html' from the frontend folder
     return send_from_directory(app.static_folder, 'index.html')
 
 @app.route('/<path:path>')
 def serve_static(path):
+    # Serve static files (CSS, JS, images, etc.) from the frontend folder
     return send_from_directory(app.static_folder, path)
 
 @app.route('/predict', methods=['POST'])
@@ -65,4 +68,5 @@ def predict():
         return jsonify({'error': 'Error predicting sentiment.'}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5500)
+    # Binding the app to listen on port 10000 (for Render) and making it accessible externally
+    app.run(debug=True, host='0.0.0.0', port=10000)
